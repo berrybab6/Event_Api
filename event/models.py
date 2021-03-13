@@ -1,5 +1,5 @@
 from django.db import models
-from users.models import UserInfo
+# from users.models import UserInfo
 
 # Create your models here.
 class EventInfo(models.Model):
@@ -12,6 +12,6 @@ class EventInfo(models.Model):
     begins_on = models.DateTimeField()
     ends_on = models.DateTimeField()
     deadline = models.DateTimeField()
-    user = models.ForeignKey(UserInfo, on_delete=models.CASCADE,null=False)
+    # user = models.ForeignKey(UserInfo, on_delete=models.CASCADE,null=False)
     class Meta:
         ordering=['created']

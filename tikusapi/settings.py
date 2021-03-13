@@ -47,9 +47,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'rest_framework.authtoken',
     'django.contrib.staticfiles',
-    'users.apps.UsersConfig',
+    'profiles.apps.ProfilesConfig',
+    'accounts.apps.AccountsConfig',
     'event.apps.EventConfig']
 
+AUTH_USER_MODEL = 'accounts.User'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -61,7 +63,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'tikusapi.urls'
-AUTH_USER_MODEL = 'users.UserInfo'
+
 
 TEMPLATES = [
     {
