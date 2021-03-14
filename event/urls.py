@@ -10,7 +10,8 @@ from . import views
 # router.register("create", views.EventViewSet, basename="create")
 
 urlpatterns = [
-    path('createEvent', views.EventViewSet.as_view())
+    path('event/', views.EventViewSet.as_view()),
+    path('event/<int:pk>/', views.EventViewByID.as_view())
     # path('deleteEvent/:id', views.delete_event, name='delete Event'),
     # path('updateEvent/:id', views.update_event, name='update Event'),
     # path("getEvents", views.get_events, name='get Events')

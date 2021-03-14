@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'profiles.apps.ProfilesConfig',
     'accounts.apps.AccountsConfig',
+    'rest_framework',
+    'frontend.apps.FrontendConfig',
     'event.apps.EventConfig']
 
 AUTH_USER_MODEL = 'accounts.User'
@@ -133,5 +135,12 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
-
+import os
 STATIC_URL = '/static/'
+STATICFILES_DIRS  = [
+    BASE_DIR / 'frontend/static'
+] 
+STATIC_ROOT = os.path.join(BASE_DIR, '/static/')
+
+# STATIC_ROOT = "../frontend/static/"
+# STATIC_ROOT = os.path.join('/tikusapi/frontend/static/frontend/')
