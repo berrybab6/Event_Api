@@ -1,8 +1,10 @@
 from django.db import models
 # from users.models import UserInfo
+from django.conf import settings
 
 # Create your models here.
 class EventInfo(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, default=False, on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=150)
     description = models.TextField(max_length=300)
     event_pic = models.URLField()

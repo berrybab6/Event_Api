@@ -9,6 +9,15 @@ from .serializers import EventInfoSerializers
 
 # Create your views here.
 
+class EventWritePermission(permissions.BasePermission):
+    message = "Editing is only restricted to the Author"
+
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return obj.id == request.user
+    
+
 class EventViewSet(generics.GenericAPIView):
     queryset = EventInfo.objects.all()
     serializer_class = EventInfoSerializers
@@ -43,20 +52,20 @@ class EventViewSet(generics.GenericAPIView):
         else:
             return JsonResponse({"message":"No Event Currently"})
 
-class EventViewByID(generics.GenericAPIView):
+class EventViewByID(generics.GenericAPIView, EventWritePermission):
     queryset = EventInfo.objects.all()
     serializer_class = EventInfoSerializers
-    permission_classes = (permissions.IsAuthenticated, )
-    def get(self, request, pk):
-        try:
-            event = EventInfo.objects.get(id=pk)
-            if event:
-                ser = EventInfoSerializers(event)
-                return JsonResponse(ser.data, safe=False)
-            else:
-                return JsonResponse({"error":"Event Doesnot Exist"})
-        except Exception:
-            return JsonResponse({"error":"Event Doesnot Exist"})
+    permission_classes = [EventWritePermission]
+    # def get(self, request, pk):
+    #     try:
+    #         event = EventInfo.objects.get(id=pk)
+    #         if event:
+    #             ser = EventInfoSerializers(event)
+    #             return JsonResponse(ser.data, safe=False)
+    #         else:
+    #             return JsonResponse({"error":"Event Doesnot Exist"})
+    #     except Exception:
+    #         return JsonResponse({"error":"Event Doesnot Exist"})
     def put(self, request, pk):
         try:
             event = EventInfo.objects.get(id=pk)

@@ -10,7 +10,7 @@ from rest_framework.authtoken.views import ObtainAuthToken
 
 # , authenticate
 from rest_framework.permissions import AllowAny
-from rest_framework import generics, status
+from rest_framework import generics, status, permissions
 # from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 # Create your views here.
@@ -36,6 +36,10 @@ class UserCreationView(generics.GenericAPIView):
         serial = UserSerializers(user)
         return JsonResponse({"user":serial.data})
     
+class GetAllUserView(generics.GenericAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializers
+    permission_classes = (permissions.IsAdminUser, )
     def get(self, request,format=None):
         user = User.objects.all()
         serialize = UserSerializers(user,many=True)
