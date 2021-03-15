@@ -18,12 +18,12 @@ class EventViewSet(generics.GenericAPIView):
         if request.method == 'POST':
             title = request.data['title']
             description = request.data['description']
-            event_pic = request.data['event_pic']
-            seat_limit = request.data['seat_limit']
+            event_pic = request.data.get('event_pic',"")
+            seat_limit = request.data.get('seat_limit',0)
             # created = request.data.get('created', dt.now())
-            ends_on = request.data['ends_on']
-            begins_on = request.data['begins_on']
-            deadline = request.data['deadline']
+            ends_on = request.data.get('ends_on',"2018-03-29T13:34:00.000")
+            begins_on = request.data.get('begins_on',"2018-03-29T13:34:00.000")
+            deadline = request.data.get('deadline',"2018-03-29T13:34:00.000")
             registered_num = 0
             # user_id = request.data['user_id']
             try:
@@ -39,7 +39,7 @@ class EventViewSet(generics.GenericAPIView):
 
         if event:
             ser = EventInfoSerializers(event, many=True)
-            return JsonResponse({"events":ser.data}, status=status.HTTP_200_OK)
+            return JsonResponse(ser.data, safe=False)
         else:
             return JsonResponse({"message":"No Event Currently"})
 
@@ -52,7 +52,7 @@ class EventViewByID(generics.GenericAPIView):
             event = EventInfo.objects.get(id=pk)
             if event:
                 ser = EventInfoSerializers(event)
-                return JsonResponse({"event":ser.data}, status=status.HTTP_200_OK)
+                return JsonResponse(ser.data, safe=False)
             else:
                 return JsonResponse({"error":"Event Doesnot Exist"})
         except Exception:
