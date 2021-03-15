@@ -1,7 +1,10 @@
 import React, { Component, Fragment } from 'react';
+
 import { connect } from 'react-redux';
+
 import PropTypes from 'prop-types';
-import { getEvents } from '../../actions/events';
+
+import { getEvents, deleteEvent  } from '../../actions/events';
 
 export class Events extends Component {
   static propTypes () {
@@ -35,8 +38,8 @@ export class Events extends Component {
          </thead>
 
          <tbody>
-          <tr >
-             <td>NAme</td>
+          {/* <tr > */}
+             {/* <td>NAme</td>
                <td>{ this.props.events}</td>  
                 <td>description</td>
                
@@ -47,20 +50,23 @@ export class Events extends Component {
               <td><button className="btn btn-danger btn-sm">
                 Delete
               </button></td>
-              </tr>   
-            {/* { this.props.events.map((event) => (
+              </tr>    */}
+              
+             { this.props.events.map((event) => (
               <tr key={event.id}>
-              <td>{event.id}</td>
+              <td>{event.title}</td>
               <td>{event.description}</td>
               <td>{event.seat_limit}</td>
               <td>{event.begins_on}</td>
               <td>{event.ends_on}</td>
               <td>{event.deadline}</td>
-              <td><button className="btn btn-danger btn-sm">
-                Delete
+              <td><button 
+              onClick={this.props.deleteEvent.bind(this, event.id)}
+              className="btn btn-danger btn-sm">
+              Delete
               </button></td>
               </tr>
-            ))} */}
+            ))}
          </tbody>
        </table>
         </Fragment>
@@ -74,4 +80,4 @@ const mapStateToProps = state =>({
   events: state.events.events
 });
 
-export default connect(mapStateToProps, {getEvents})(Events);
+export default connect(mapStateToProps, {getEvents, deleteEvent})(Events);
