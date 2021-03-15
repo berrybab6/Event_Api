@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.permissions import AllowAny
 from django.http import HttpResponse,JsonResponse
 # from rest_framework.decorators import action
-from rest_framework import generics,status
+from rest_framework import generics,status, permissions
 from datetime import datetime as dt
 from .models import EventInfo
 from .serializers import EventInfoSerializers
@@ -12,7 +12,7 @@ from .serializers import EventInfoSerializers
 class EventViewSet(generics.GenericAPIView):
     queryset = EventInfo.objects.all()
     serializer_class = EventInfoSerializers
-    permission_classes = (AllowAny, )
+    permission_classes = (permissions.IsAuthenticated, )
     # @action(methods=['POST'], detail=False)
     def post(self, request):
         if request.method == 'POST':
@@ -46,7 +46,7 @@ class EventViewSet(generics.GenericAPIView):
 class EventViewByID(generics.GenericAPIView):
     queryset = EventInfo.objects.all()
     serializer_class = EventInfoSerializers
-    permission_classes = (AllowAny, )
+    permission_classes = (permissions.IsAuthenticated, )
     def get(self, request, pk):
         try:
             event = EventInfo.objects.get(id=pk)
