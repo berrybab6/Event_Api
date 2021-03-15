@@ -24,7 +24,7 @@ class UserManager(BaseUserManager):
 # Create User models here.
 class User(AbstractBaseUser):
     email = models.CharField(unique=True, max_length=255, default=False)
-    # full_name = models.CharField(max_length=255, blank=True, null=True)
+    full_name = models.CharField(max_length=255, blank=True, null=True)
     active = models.BooleanField(default=True)
     staff = models.BooleanField(default=False)
     admin = models.BooleanField(default=False)
