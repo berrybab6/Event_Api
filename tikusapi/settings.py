@@ -94,12 +94,14 @@ WSGI_APPLICATION = 'tikusapi.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': "TikusEventNew",
+        'NAME': "EventApi",
         'USER': "postgres",
         'PASSWORD':'berrybab0764',
         'HOST':'localhost'
     }
 }
+USE_TZ = False
+
 
 
 # Password validation

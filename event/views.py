@@ -23,35 +23,29 @@ class EventViewSet(generics.GenericAPIView):
     queryset = EventInfo.objects.all()
     serializer_class = EventInfoSerializers
     permission_classes = (permissions.IsAuthenticated, )
-    # # @action(methods=['POST'], detail=False)
-    # def post(self, request):
-    #     if request.method == 'POST':
-    #         title = request.data['title']
-    #         description = request.data['description']
-    #         event_pic = request.FILES('event_pic',"")
-    #         seat_limit = request.data.get('seat_limit',0)
-    #         # created = request.data.get('created', dt.now())
-    #         ends_on = request.data.get('ends_on',"2018-03-29T13:34:00.000")
-    #         begins_on = request.data.get('begins_on',"2018-03-29T13:34:00.000")
-    #         deadline = request.data.get('deadline',"2018-03-29T13:34:00.000")
-    #         registered_num = 0
-    #         # user_id = request.data['user_id']
-    #         try:
-    #             event = EventInfo(title=title, registered_num=registered_num, user=request.user, description=description, event_pic=event_pic, seat_limit=seat_limit, begins_on=begins_on, ends_on=ends_on, deadline=deadline)
-    #     #return HttpResponse("Create Event")
-    #             event.save()
-    #             serial = EventInfoSerializers(event)
-    #             return JsonResponse({'event':serial.data}, status = status.HTTP_201_CREATED)
-    #         except Exception:
-    #             raise ValueError("Invalid request")
+    # @action(methods=['POST'], detail=False)
+    def post(self, request):
+        if request.method == 'POST':
+            title = request.data['title']
+            description = request.data['description']
+            event_pic = request.FILES.get('event_pic', "")
+            seat_limit = request.data.get('seat_limit', 0)
+            # created = request.data.get('created', dt.now())
+            ends_on = request.data.get('ends_on', "2018-03-29T13:34:00.000")
+            begins_on = request.data.get('begins_on', "2018-03-29T13:30:00.000")
+            deadline = request.data.get('deadline', "2018-03-29T13:34:00.000")
+            registered_num = 0
+            # user_id = request.data['user_id']
+            try:
+                event = EventInfo(title=title, registered_num=registered_num, user=request.user, description=description, event_pic=event_pic, seat_limit=seat_limit, begins_on=begins_on, ends_on=ends_on, deadline=deadline)
+        #return HttpResponse("Create Event")
+                event.save()
+                serial = EventInfoSerializers(event)
+                return JsonResponse({'event':serial.data}, status = status.HTTP_201_CREATED)
+            except Exception:
+                raise ValueError("Invalid request")
 
-    def post(self, request, *args, **kwargs):
-        file_serializer = EventInfoSerializers(data=request.data)
-        if file_serializer.is_valid():
-            file_serializer.save()
-            return Response(file_serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+   
     def get(self, request):
         event = EventInfo.objects.all()
 
@@ -109,7 +103,7 @@ class EventViewByID(generics.GenericAPIView, EventWritePermission):
                 ser = EventInfoSerializers(event)
                 return JsonResponse({"event":ser.data}, status=status.HTTP_201_CREATED)
             else:
-                return Json({"error":"User isnot able to edit the event"})
+                return JsonResponse({"error":"User isnot able to edit the event"})
         except Exception:
             return JsonResponse({"error":"Event Doesnot exist"}, status=status.HTTP_404_NOT_FOUND)
     def delete(self, request, pk):
