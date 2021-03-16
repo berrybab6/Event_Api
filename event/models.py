@@ -4,7 +4,7 @@ from django.conf import settings
 
 # Create your models here.
 class EventInfo(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, default=False, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,related_name="events" ,default=False, on_delete=models.CASCADE, null=True)
     title = models.CharField(max_length=150)
     description = models.TextField(max_length=300)
     event_pic = models.URLField()
@@ -17,3 +17,4 @@ class EventInfo(models.Model):
     # user = models.ForeignKey(UserInfo, on_delete=models.CASCADE,null=False)
     class Meta:
         ordering=['created']
+    

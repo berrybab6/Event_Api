@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework.permissions import AllowAny
+# from rest_framework.permissions import AllowAny
 from django.http import HttpResponse,JsonResponse
 # from rest_framework.decorators import action
 from rest_framework import generics,status, permissions
@@ -15,7 +15,7 @@ class EventWritePermission(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
-        return obj.id == request.user
+        return obj.user_id == request.user
     
 
 class EventViewSet(generics.GenericAPIView):
@@ -36,7 +36,7 @@ class EventViewSet(generics.GenericAPIView):
             registered_num = 0
             # user_id = request.data['user_id']
             try:
-                event = EventInfo(title=title, registered_num=registered_num, description=description, event_pic=event_pic, seat_limit=seat_limit, begins_on=begins_on, ends_on=ends_on, deadline=deadline)
+                event = EventInfo(title=title, registered_num=registered_num, user=request.user, description=description, event_pic=event_pic, seat_limit=seat_limit, begins_on=begins_on, ends_on=ends_on, deadline=deadline)
         #return HttpResponse("Create Event")
                 event.save()
                 serial = EventInfoSerializers(event)
@@ -52,24 +52,43 @@ class EventViewSet(generics.GenericAPIView):
         else:
             return JsonResponse({"message":"No Event Currently"})
 
+class EventByUserView(generics.GenericAPIView):
+    queryset = EventInfo.objects.all()
+    serializer_class = EventInfoSerializers
+    permission_classes = [permissions.IsAuthenticated]
+    def get(self, request):
+        try:
+            events = EventInfo.objects.filter(user_id=request.user.id)
+            if events:
+                ser = EventInfoSerializers(events, many=True)
+                return JsonResponse(ser.data, safe=False)
+            else:
+                return JsonResponse({"message":"No Event Currently"})
+        except Exception:
+            return JsonResponse({"error":"Something went wrong"})   
 class EventViewByID(generics.GenericAPIView, EventWritePermission):
     queryset = EventInfo.objects.all()
     serializer_class = EventInfoSerializers
-    permission_classes = [EventWritePermission]
-    # def get(self, request, pk):
-    #     try:
-    #         event = EventInfo.objects.get(id=pk)
-    #         if event:
-    #             ser = EventInfoSerializers(event)
-    #             return JsonResponse(ser.data, safe=False)
-    #         else:
-    #             return JsonResponse({"error":"Event Doesnot Exist"})
-    #     except Exception:
-    #         return JsonResponse({"error":"Event Doesnot Exist"})
-    def put(self, request, pk):
+    permission_classes = [permissions.IsAuthenticated]
+    
+    # def get_queryset(self):
+    #     return super(EventViewByID, self).filter(user=self.request.user)
+    def get(self, request, pk):
+        
         try:
             event = EventInfo.objects.get(id=pk)
             if event:
+                ser = EventInfoSerializers(event)
+                return JsonResponse({"user":ser.data, "user_logged":request.user.id})
+            else:
+                return JsonResponse({"error":"Event Doesnot Exist"})
+        except Exception:
+            return JsonResponse({"error":"invalid Request"})
+    def put(self, request, pk):
+    
+        try:
+            event = EventInfo.objects.get(id=pk)
+            if event.user_id == request.user.id:
                 title = request.data.get('title', event.title)
                 desc = request.data.get('description', event.description)
                 seat = request.data.get('seat_limit', event.seat_limit)
@@ -80,12 +99,14 @@ class EventViewByID(generics.GenericAPIView, EventWritePermission):
 
                 ser = EventInfoSerializers(event)
                 return JsonResponse({"event":ser.data}, status=status.HTTP_201_CREATED)
+            else:
+                return Json({"error":"User isnot able to edit the event"})
         except Exception:
             return JsonResponse({"error":"Event Doesnot exist"}, status=status.HTTP_404_NOT_FOUND)
     def delete(self, request, pk):
         try:
             event = EventInfo.objects.get(id=pk)
-            if event:
+            if request.user.id == event.user_id:
                 event.delete()
                 return JsonResponse({"message":"Event Deleted Sucesfully"}, status=status.HTTP_204_NO_CONTENT)
             else:

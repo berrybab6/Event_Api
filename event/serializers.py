@@ -13,6 +13,6 @@ class  EventInfoSerializers(serializers.ModelSerializer):
                   'created',
                   'begins_on',
                   'ends_on',
-                  'deadline'
-                #   'user_id',
+                  'deadline',
+                  'user_id',
                   ]
