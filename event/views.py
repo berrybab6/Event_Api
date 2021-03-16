@@ -110,6 +110,6 @@ class EventViewByID(generics.GenericAPIView, EventWritePermission):
                 event.delete()
                 return JsonResponse({"message":"Event Deleted Sucesfully"}, status=status.HTTP_204_NO_CONTENT)
             else:
-                return JsonResponse({"error":"Event Doesnot Doesnot exist"}, status=status.HTTP_404_NOT_FOUND)
+                return JsonResponse({"error":"You cant delete this event"}, status=status.HTTP_404_NOT_FOUND)
         except Exception:
             return JsonResponse({"error":"Event Doesnot Exist"}, status=status.HTTP_404_NOT_FOUND)
