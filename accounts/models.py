@@ -36,7 +36,7 @@ class User(AbstractBaseUser):
     email = models.CharField(unique=True, max_length=255, default=False)
     full_name = models.CharField(max_length=255, blank=True, null=True)
     gender = models.CharField(max_length=12, null=True)
-    profile_url = models.URLField(default=False)
+    profile_url = models.ImageField(default=False, null=True, blank=True)
     reset_link = models.CharField(max_length=255, null=True)
     active = models.BooleanField(default=True)
     staff = models.BooleanField(default=False)
